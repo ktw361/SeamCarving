@@ -102,7 +102,7 @@ def vertical_carving(image, scale_h):
 	Args & Returns:
 		See horizontal_carving()
 	"""
-	image = np.rot90(img, 1, (0, 1))
+	image = np.rot90(image, 1, (0, 1))
 	image = horizontal_carving(image, scale_h)
 	image = np.rot90(image, 3, (0, 1))
 	return image
