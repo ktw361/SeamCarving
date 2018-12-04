@@ -120,9 +120,9 @@ def main():
 	img = imread(in_filename)
 
 	if which_axis == 'h':
-		out = horizontal_carving(img, scale)
-	elif which_axis == 'w':
 		out = vertical_carving(img, scale)
+	elif which_axis == 'w':
+		out = horizontal_carving(img, scale)
 	else:
 		print('usage: carve.py <h/w> <scale> <image_in> <image_out>', file=sys.stderr)
 		sys.exit(1)
