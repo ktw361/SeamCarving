@@ -5,17 +5,15 @@ from scipy.ndimage.filters import convolve
 
 import os
 
-img = np.asarray(imread('scene.jpg'), dtype = np.float32) / 255.
-
 def calc_energy(img):
     """
     calculate image energy based on gradient using sobel operator
-    
+
     Args:
         img:  numpy.ndarray of shape [H, W, C]
-    
+
     Returns:
-        energy_map:  numpy.ndarray of shape [H, W] 
+        energy_map:  numpy.ndarray of shape [H, W]
     """
     kern_du = np.asarray([[1., 2., 1.],
                        [0. , 0. , 0.,],
@@ -31,19 +29,19 @@ def calc_energy(img):
 def minimal_seam(energy_map):
     """
     get M and seam route index based on energy map
-    
+
     Args:
         energy_map:  numpy.ndarray of shape [H, W]
-    
+
     Returns:
         M:  stores seam energy w.r.t each line(row)
         track: stroes which(index of) element used by *Next* row
     """
     H, W = energy_map.shape
-    
+
     M = np.zeros((H, W), dtype = np.float32)
     track = np.zeros_like(M, dtype = np.int32)
-    
+
     # compute seam
     M[0,:] = energy_map[0,:]
 
@@ -54,20 +52,20 @@ def minimal_seam(energy_map):
         for j in range(1, W - 1):
             track[i,j] = np.argmin(M[i-1,j-1:j+2]) + (j - 1)
             M[i,j] = energy_map[i,j] + M[i-1, track[i,j]]
-        
+
         track[i,-1] = np.argmin(M[i-1,-2:])
         M[i,-1] = energy_map[i,-1] + M[i-1, track[i,-1]]
-        
+
     return M, track
 
 def horizontal_carving(image, scale_w):
-    """ 
+    """
     Carve image by removing minimal_seam repetitively until meet width scale
-    
+
     Args:
         image:  image input, ndarray shape [H, W, C]
         scale_w:  expected final scale of width
-        
+
     Returns:
         image_carved: carved image of shape [H, W * scale_w, C]
         image_seam: original image with removed seam highlighted
@@ -89,7 +87,7 @@ def horizontal_carving(image, scale_w):
 #         Tracer()()
         img = np.reshape(img[mask], [H, W - 1, 3])
         return img
-    
+
     H, W, C = image.shape
     W_finish = int(np.round(W * scale_w))
     for i in range(W - W_finish):
@@ -130,5 +128,5 @@ def main():
 		sys.exit(1)
 	imwrite(out_filename, out)
 
-if '__name__' == '__main__':
+if __name__ == '__main__':
 	main()
