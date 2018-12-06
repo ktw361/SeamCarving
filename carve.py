@@ -1,9 +1,10 @@
 import sys
+from tqdm import trange
 import numpy as np
 from imageio import imread, imwrite
 from scipy.ndimage.filters import convolve
+import numba
 
-import os
 
 def calc_energy(img):
     """
@@ -19,13 +20,14 @@ def calc_energy(img):
                        [0. , 0. , 0.,],
                        [-1., -2., -1.]])
     kern_dv = kern_du.T
-    filter_du = np.tile(kern_du, (3, 1, 1))
-    filter_dv = np.tile(kern_dv, (3, 1, 1))
+    filter_du = np.stack([kern_du] * 3, axis = 2)
+    filter_dv = np.stack([kern_dv] * 3, axis = 2)
     img = img.astype(np.float32)
     convolved = np.absolute(convolve(img, filter_du)) + np.absolute(convolve(img, filter_dv))
     energy_map = np.sum(convolved , axis = 2)
     return energy_map
 
+@numba.jit
 def minimal_seam(energy_map):
     """
     get M and seam route index based on energy map
@@ -39,22 +41,17 @@ def minimal_seam(energy_map):
     """
     H, W = energy_map.shape
 
-    M = np.zeros((H, W), dtype = np.float32)
+    M = energy_map.copy()
     track = np.zeros_like(M, dtype = np.int32)
 
     # compute seam
-    M[0,:] = energy_map[0,:]
-
     for i in range(1,H):
-        track[i,1] = np.argmin(M[i-1,:2])
-        M[i,0] = energy_map[i,0] + M[i-1,track[i,0]]
+        track[i, 1] = np.argmin(M[i-1, :2])
+        M[i, 0] += M[i - 1, track[i, 0]]
 
-        for j in range(1, W - 1):
-            track[i,j] = np.argmin(M[i-1,j-1:j+2]) + (j - 1)
-            M[i,j] = energy_map[i,j] + M[i-1, track[i,j]]
-
-        track[i,-1] = np.argmin(M[i-1,-2:])
-        M[i,-1] = energy_map[i,-1] + M[i-1, track[i,-1]]
+        for j in range(1, W):
+            track[i, j] = np.argmin(M[i - 1, j - 1:j + 2]) + (j - 1)
+            M[i, j] += M[i - 1, track[i, j]]
 
     return M, track
 
@@ -71,6 +68,7 @@ def horizontal_carving(image, scale_w):
         image_seam: original image with removed seam highlighted
     """
 #     image_seam = image.copy()
+    @numba.jit
     def _carve_one_column(img):
         H, W, C = img.shape
         # Get energy map
@@ -83,14 +81,13 @@ def horizontal_carving(image, scale_w):
         for i in range(-2, - H - 1, -1):
             pick = track[i, pick]
             mask[i, pick] = False
-#         print(np.sum(~mask))
-#         Tracer()()
+
         img = np.reshape(img[mask], [H, W - 1, 3])
         return img
 
     H, W, C = image.shape
     W_finish = int(np.round(W * scale_w))
-    for i in range(W - W_finish):
+    for i in trange(W - W_finish):
 #         image = image.copy() ???
         image = _carve_one_column(image)
     return image
