@@ -6,7 +6,8 @@ Seam Carving implementation based on *[Seam Carving for Content-Aware Image Resi
 python carve.py <h/w> <scale> </path/to/input> </path/to/output>
 `
 
-## `Original - Seam = Carved`
+## Result
+#### `Original - Seam = Carved`
 #### Width carving
 | Original | Seam | Carved |
 | --- | --- | --- |
