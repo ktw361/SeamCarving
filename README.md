@@ -14,12 +14,12 @@ python carve.py <h/w> <scale> </path/to/input> </path/to/output>
 | ![original](https://raw.githubusercontent.com/ktw361/SeamCarving/master/imgs/Broadway_tower.jpg) | ![shrunk](https://raw.githubusercontent.com/ktw361/SeamCarving/master/output_imgs/Broadway_tower_shrunk_seam.jpg)| ![shrunk](https://raw.githubusercontent.com/ktw361/SeamCarving/master/output_imgs/Broadway_tower_shrunk.jpg)|
 
 
-#### Width carving
+### Width carving
 | Original | Carved |
 | ---  | --- |
 | ![original](https://raw.githubusercontent.com/ktw361/SeamCarving/master/imgs/home_2.jpg)|  ![shrunk](https://raw.githubusercontent.com/ktw361/SeamCarving/master/output_imgs/home_2_shrunk.jpg) |
 
-#### Height carving
+### Height carving
 
 | Original | Carved |
 | ---  | --- |
