@@ -133,8 +133,6 @@ def horizontal_carving(image, scale_w):
     for i in trange(W - W_finish):
         image, pick_list = _carve_one_column(image)
         removed += [pick_list]
-    # import ipdb
-    # ipdb.set_trace()
     image_seam = process_seam(original, removed)
 
     return image, image_seam
