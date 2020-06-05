@@ -26,4 +26,6 @@ python carve.py <h/w> <scale> </path/to/input> </path/to/output>
 | ![original](https://raw.githubusercontent.com/ktw361/SeamCarving/master/imgs/home_1.jpg)|  ![shrunk](https://raw.githubusercontent.com/ktw361/SeamCarving/master/output_imgs/home_1_shrunk.jpg) |
 | ![original](https://raw.githubusercontent.com/ktw361/SeamCarving/master/imgs/night.jpg) | ![shrunk](https://raw.githubusercontent.com/ktw361/SeamCarving/master/output_imgs/night_shrunk.jpg)|
 
+## Acknowledgements
 
+Many thanks to the great post: https://karthikkaranth.me/blog/implementing-seam-carving-with-python/
